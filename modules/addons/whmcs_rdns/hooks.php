@@ -28,11 +28,16 @@
  *
  * add_hook(string $hookPointName, int $priority, string|array|Closure $function)
  */
-add_hook('ClientEdit', 1, function(array $params) {
-    try {
-        // Call the service's function, using the values provided by WHMCS in
-        // `$params`.
-    } catch (Exception $e) {
-        // Consider logging or reporting the error.
-    }
-});
+add_hook('ClientAreaPrimaryNavbar', 1, function ()
+{
+    $primaryNavbar = Menu::primaryNavbar();
+    $primarySidebar = Menu::primarySidebar();
+    $secondaryNavbar = Menu::secondarySidebar();
+
+    $primaryNavbar->getChild('Domains')
+              ->addChild('rdns', array(
+              'label' => 'Управление RDNS',
+              'icon' => 'fas fa-test',
+              'uri' => '/index.php?m=whmcs_rdns'
+            ))->setClass(($_GET['m'] == "whmcs_rdns" ? 'active' : ''));
+}
