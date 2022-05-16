@@ -32,14 +32,51 @@ class Controller {
         $base = 'https://api.selectel.ru/domains/v1/';
         $ch = curl_init();
         curl_setopt_array($ch, [
-            CURLOPT_URL => 'https://api.selectel.ru/domains/v1/',
+            CURLOPT_URL => $base . 'ptr/',
             CURLOPT_HTTPHEADER => array(
                 "Content-Type: application/json",
-                "X-Token: 259sqqgNYD6AH523nx6Qs7GV5_83138",
-                "Content-Type: application/json"
+                "X-Token: tvPVEXfRSSPfY9IXyU2TngeHu_83138",
             )
+
         ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_HEADER, false);
         $response = curl_exec($ch);
+
+        $response = json_decode($response, true);
+
+
+        $uid = $_SESSION['uid'];
+        $command = 'GetClientsProducts';
+        $postData = array(
+            'clientid' => $uid,
+            'stats' => true,
+        );
+
+        $results = localAPI($command, $postData);
+
+        $ips = [];
+        var_dump($results['products']);
+        echo "<br>";
+
+        echo "<br>";
+
+        foreach ($results['products']['product']  as $product){
+            var_dump($product);
+            echo "<br>";
+            echo $product['dedicatedip'];
+            echo "<br>";
+            echo $product['assignedips'];
+            echo "<br>";
+            echo "<br>";
+            $ips = array_merge($ips, explode(',', $product['dedicatedip']), explode(' ', $product['assignedips']));
+
+        }
+
+        $ips = array_filter($ips, function($v){
+            return $v!='';
+        });
 
 
 
@@ -52,9 +89,9 @@ class Controller {
             'requirelogin' => false, // Set true to restrict access to authenticated client users
             'forcessl' => false, // Deprecated as of Version 7.0. Requests will always use SSL if available.
             'vars' => array(
-                'modulelink' => $modulelink,
+                'modulelink' => print_r($ips, true),
                 'configTextField' => $response,
-                'customVariable' => 'your own content goes here',
+                'customVariable' => print_r($results, true),
             ),
         );
     }

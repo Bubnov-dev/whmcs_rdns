@@ -34,10 +34,10 @@ add_hook('ClientAreaPrimaryNavbar', 1, function ()
     $primarySidebar = Menu::primarySidebar();
     $secondaryNavbar = Menu::secondarySidebar();
 
-    $primaryNavbar->getChild('Domains')
+    $primaryNavbar//->getChild('Domains')
               ->addChild('rdns', array(
               'label' => 'Управление RDNS',
               'icon' => 'fas fa-test',
               'uri' => '/index.php?m=whmcs_rdns'
             ))->setClass(($_GET['m'] == "whmcs_rdns" ? 'active' : ''));
-}
+});
